@@ -5,6 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed
+- Toolchain: Android Gradle Plugin 9.4 (built-in Kotlin), Gradle 9.7.1, Kotlin 2.4.20, compileSdk 37.
+- Libraries: Compose BOM 2026.09.00, AndroidX Core 1.19, Activity 1.13, Lifecycle 2.11, DataStore 1.2.1, Coil 3.6.2, kotlinx.coroutines 1.11.
+- Dependabot groups all Gradle updates into one pull request, because toolchain and AndroidX updates depend on each other.
+
 ## [1.1.0] - 2026-09-17
 
 ### Added

@@ -97,7 +97,7 @@ private fun clean(args: List<String>): Int {
 }
 
 private fun text(args: List<String>): Int {
-    val input = generateSequence(::readLine).joinToString("\n")
+    val input = generateSequence(::readlnOrNull).joinToString("\n")
     val result = TextSanitizer.clean(input, TextCleanOptions(stripMarkdown = "--markdown" in args))
     print(result.text)
     System.err.println("changes: ${result.counts}")

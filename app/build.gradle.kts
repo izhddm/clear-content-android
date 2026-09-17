@@ -1,9 +1,7 @@
 import java.util.Properties
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -14,7 +12,7 @@ val keystoreProps = Properties().apply {
 
 android {
     namespace = "com.clearcontent.app"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.clearcontent.app"
@@ -26,7 +24,7 @@ android {
     }
 
     sourceSets {
-        getByName("androidTest").assets.srcDir(rootProject.file("core/src/test/resources"))
+        getByName("androidTest").assets.directories.add(rootProject.file("core/src/test/resources").path)
     }
 
     signingConfigs {
@@ -69,12 +67,6 @@ android {
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 

@@ -190,7 +190,7 @@ fun AppRoot(vm: MainViewModel, onDeleteOriginals: () -> Unit) {
                         modifier = Modifier.padding(start = 16.dp),
                     )
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
             )
         },
         bottomBar = {

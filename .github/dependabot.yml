@@ -1,19 +1,15 @@
 version: 2
 updates:
+  # AndroidX, Compose, Kotlin and the Android Gradle Plugin depend on each other
+  # (e.g. new AndroidX releases need a newer AGP and compileSdk), so they arrive as one PR.
   - package-ecosystem: gradle
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     groups:
-      androidx-compose:
-        patterns: ["androidx.compose*"]
-      androidx:
-        patterns: ["androidx.*"]
-      kotlin:
-        patterns: ["org.jetbrains.kotlin*", "org.jetbrains.kotlinx*"]
-      build-tooling:
-        patterns: ["com.android.tools.build*", "com.android.application"]
+      gradle-dependencies:
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

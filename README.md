@@ -87,7 +87,7 @@ Clear Content removes **file metadata** and **hidden characters** — the same k
 
 ## Building from source
 
-Requirements: JDK 17 or 21 (Gradle 8.13 does not run on JDK 25) and the Android SDK with platform 36.
+Requirements: a full JDK 17 or newer and the Android SDK with `platforms;android-37.0` and `build-tools;37.0.0`.
 
 ```bash
 ./gradlew :core:test                     # unit, fixture and fuzz tests (JVM)

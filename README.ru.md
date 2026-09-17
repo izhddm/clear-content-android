@@ -110,7 +110,7 @@ gh attestation verify ClearContent-1.1.0.apk --repo izhddm/clear-content-android
 
 ## Сборка из исходников
 
-Нужны JDK 17 или 21 (Gradle 8.13 не запускается на JDK 25) и Android SDK с platform 36.
+Нужны полноценный JDK 17 или новее и Android SDK с `platforms;android-37.0` и `build-tools;37.0.0`.
 
 ```bash
 ./gradlew :core:test                     # модульные, эталонные и фаззинг-тесты (JVM)
