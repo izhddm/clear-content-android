@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Clear Content</string>
+    <string name="share_target_label">Очистить от ИИ-меток</string>
+    <string name="open_with_label">Очистить в Clear Content</string>
+    <string name="process_text_label">Очистить текст</string>
+    <string name="clean_clipboard">Очистить буфер обмена</string>
+    <string name="tile_label">Очистить буфер</string>
+    <string name="tile_subtitle">Clear Content</string>
+    <string name="shortcut_clipboard_short">Буфер</string>
+    <string name="shortcut_media_short">Фото и видео</string>
+    <string name="shortcut_media_long">Очистить фото и видео</string>
+    <string name="shortcut_text_short">Текст</string>
+    <string name="shortcut_text_long">Очистить текст</string>
+</resources>

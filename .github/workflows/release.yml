@@ -1,0 +1,139 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to build and publish, e.g. v1.1.0
+        required: true
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Signed APK & GitHub release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      GRADLE_OPTS: -Dorg.gradle.daemon=false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Check signing secrets
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::Release signing secrets are not configured, so no APK is published. See CONTRIBUTING.md → Releases."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-java@v4
+        if: steps.signing.outputs.enabled == 'true'
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.signing.outputs.enabled == 'true'
+        with:
+          cache-read-only: true
+
+      - name: Install Android SDK packages
+        if: steps.signing.outputs.enabled == 'true'
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" > /dev/null
+
+      - name: Check that the tag matches versionName
+        if: steps.signing.outputs.enabled == 'true'
+        run: |
+          version=$(sed -n 's/.*versionName = "\(.*\)"/\1/p' app/build.gradle.kts | head -1)
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::Tag $TAG does not match versionName $version"
+            exit 1
+          fi
+
+      - name: Restore signing key
+        if: steps.signing.outputs.enabled == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          mkdir -p keystore
+          echo "$KEYSTORE_BASE64" | base64 --decode > keystore/release.jks
+          {
+            echo "storeFile=keystore/release.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > keystore.properties
+
+      - name: Test and build release APK
+        if: steps.signing.outputs.enabled == 'true'
+        run: ./gradlew :core:test :app:lintRelease :app:assembleRelease
+
+      - name: Collect artifacts
+        if: steps.signing.outputs.enabled == 'true'
+        run: |
+          mkdir -p out
+          apk="out/ClearContent-${VERSION}.apk"
+          cp app/build/outputs/apk/release/app-release.apk "$apk"
+          (cd out && sha256sum ./*.apk > SHA256SUMS.txt)
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$apk" | grep -E "SHA-256" > signing-cert.txt
+          cat out/SHA256SUMS.txt signing-cert.txt
+
+      - name: Attest build provenance
+        if: steps.signing.outputs.enabled == 'true'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: out/*.apk
+
+      - name: Release notes from CHANGELOG
+        if: steps.signing.outputs.enabled == 'true'
+        run: |
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          {
+            echo
+            echo "### Verification"
+            echo '```'
+            cat out/SHA256SUMS.txt
+            cat signing-cert.txt
+            echo '```'
+            echo "Build provenance: \`gh attestation verify ClearContent-${VERSION}.apk --repo ${GITHUB_REPOSITORY}\`"
+          } >> notes.md
+
+      - name: Publish GitHub release
+        if: steps.signing.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" out/* --clobber
+          else
+            gh release create "$TAG" out/* --title "Clear Content $VERSION" --notes-file notes.md --verify-tag
+          fi
+
+      - name: Remove signing material
+        if: always()
+        run: rm -rf keystore keystore.properties

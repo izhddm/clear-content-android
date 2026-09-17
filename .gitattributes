@@ -1,0 +1,15 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+gradlew text eol=lf
+
+# Binary test media and assets
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.gif binary
+*.heic binary
+*.avif binary
+*.mp4 binary
+*.mov binary
+*.jar binary

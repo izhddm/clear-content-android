@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_clipboard"
+        android:shortcutId="clean_clipboard"
+        android:shortcutLongLabel="@string/clean_clipboard"
+        android:shortcutShortLabel="@string/shortcut_clipboard_short">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.clearcontent.app.ui.ClipboardCleanActivity"
+            android:targetPackage="com.clearcontent.app" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_media"
+        android:shortcutId="pick_media"
+        android:shortcutLongLabel="@string/shortcut_media_long"
+        android:shortcutShortLabel="@string/shortcut_media_short">
+        <intent
+            android:action="com.clearcontent.app.action.PICK_MEDIA"
+            android:targetClass="com.clearcontent.app.ui.MainActivity"
+            android:targetPackage="com.clearcontent.app" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_text"
+        android:shortcutId="clean_text"
+        android:shortcutLongLabel="@string/shortcut_text_long"
+        android:shortcutShortLabel="@string/shortcut_text_short">
+        <intent
+            android:action="com.clearcontent.app.action.OPEN_TEXT"
+            android:targetClass="com.clearcontent.app.ui.MainActivity"
+            android:targetPackage="com.clearcontent.app" />
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,22 @@
+# Gradle / Kotlin
+.gradle/
+.kotlin/
+build/
+captures/
+
+# Local machine
+local.properties
+.idea/
+*.iml
+.DS_Store
+__pycache__/
+*.pyc
+
+# Signing material — never commit (see CONTRIBUTING.md → Releases)
+keystore/
+keystore.properties
+*.jks
+*.keystore
+
+# Release outputs
+dist/

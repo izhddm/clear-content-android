@@ -1,0 +1,26 @@
+Clear Content
+Copyright 2026 Dmitriy (github.com/izhddm)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+-------------------------------------------------------------------------------
+Third-party material bundled in this repository
+-------------------------------------------------------------------------------
+
+Test fixtures (core/src/test/resources/fixtures/c2pa_*)
+  Sample media with C2PA manifests taken from, or signed with the test
+  credentials of, the Content Authenticity Initiative projects:
+    - contentauth/c2pa-rs      https://github.com/contentauth/c2pa-rs      (MIT OR Apache-2.0)
+    - contentauth/c2pa-node    https://github.com/contentauth/c2pa-node    (MIT OR Apache-2.0)
+    - contentauth/c2pa-python  https://github.com/contentauth/c2pa-python  (MIT OR Apache-2.0)
+  They are used only as test inputs and are not shipped in the application.
+  The per-file origin is listed in core/src/test/resources/fixtures/README.md.
+
+Launcher icon, shortcut icons and illustrations (design/, app/src/main/res/drawable*)
+  Original artwork created for this project.
+
+Material Symbols / Material Icons (via androidx.compose.material:material-icons-extended)
+  Copyright Google LLC, Apache License 2.0.
+
+Runtime dependencies (AndroidX, Jetpack Compose, Kotlin, kotlinx.coroutines, Coil)
+  are distributed under the Apache License 2.0 by their respective authors.

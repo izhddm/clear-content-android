@@ -1,0 +1,49 @@
+name: Bug report / Ошибка
+description: Something does not work as expected / Что-то работает не так
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! **Do not attach personal photos** — describe the file instead
+        (format, source app, size) or use a sample you are happy to publish.
+        Спасибо! **Не прикладывайте личные фото** — опишите файл (формат, приложение-источник, размер).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened? / Что произошло?
+      placeholder: Steps to reproduce, expected and actual result
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area / Раздел
+      options: [Photos, Video, Text, Clipboard tile, Share sheet, Replace originals, Settings, Other]
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: File type and source app / Тип файла и откуда он
+      placeholder: "JPEG from ChatGPT, HEIC from Samsung camera, MP4 from Sora…"
+  - type: input
+    id: version
+    attributes:
+      label: App version / Версия приложения
+      placeholder: "1.1.0 (Settings → About)"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version / Устройство и версия Android
+      placeholder: "Galaxy S24 FE, Android 16"
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details shown in the app / Подробности из карточки файла
+      description: Expand the item card and copy the findings / notes, if any.
+      render: text
