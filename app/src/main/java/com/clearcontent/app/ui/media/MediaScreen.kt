@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -34,7 +35,6 @@ import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.Refresh
@@ -389,7 +389,7 @@ private fun MediaItemCard(item: QueueItem, replaceMode: Boolean, onRetry: () -> 
                         onMessage("Файл скопирован в буфер")
                     }) { Icon(Icons.Outlined.ContentCopy, contentDescription = "Копировать файл") }
                     IconButton(onClick = { Share.view(context, output.galleryUri ?: output.shareUri, output.mimeType) }) {
-                        Icon(Icons.Outlined.OpenInNew, contentDescription = "Открыть")
+                        Icon(Icons.AutoMirrored.Outlined.OpenInNew, contentDescription = "Открыть")
                     }
                 }
             }

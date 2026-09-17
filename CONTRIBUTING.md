@@ -10,11 +10,11 @@ Thanks for helping! Issues and pull requests are welcome in English or Russian.
 
 ## Development setup
 
-- **JDK 17 or 21.** Gradle 8.13 does not run on JDK 25:
+- **A full JDK 17 or newer** (not just a JRE — `javac` is required), e.g.
   ```bash
   export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
   ```
-- **Android SDK** with `platforms;android-36` and `build-tools;36.0.0`. Point `local.properties` or `ANDROID_HOME` at it.
+- **Android SDK** with `platforms;android-37.0` and `build-tools;37.0.0`. Point `local.properties` or `ANDROID_HOME` at it.
 - **A device or emulator (Android 10+)** for instrumented tests.
 
 ```bash
