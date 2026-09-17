@@ -8,6 +8,10 @@ on:
       tag:
         description: Existing tag to build and publish, e.g. v1.1.0
         required: true
+      dry_run:
+        description: Build and sign only; upload the APK as a workflow artifact instead of publishing
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -25,7 +29,10 @@ jobs:
     timeout-minutes: 30
     env:
       TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      DRY_RUN: ${{ github.event.inputs.dry_run == 'true' }}
       GRADLE_OPTS: -Dorg.gradle.daemon=false
+      # Every release must be signed with the same key, or users cannot update.
+      EXPECTED_CERT_SHA256: 09a5e0b3873a20ad1e6a25b8379381327aeac2c13bc85e76c3b22cdaaa9da346
     steps:
       - uses: actions/checkout@v7
         with:
@@ -56,7 +63,8 @@ jobs:
 
       - name: Install Android SDK packages
         if: steps.signing.outputs.enabled == 'true'
-        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;37.0.0" > /dev/null
+        # Older tags may still compile against platform 36.
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "platforms;android-37.0" "build-tools;37.0.0" > /dev/null
 
       - name: Check that the tag matches versionName
         if: steps.signing.outputs.enabled == 'true'
@@ -98,15 +106,27 @@ jobs:
           (cd out && sha256sum ./*.apk > SHA256SUMS.txt)
           "$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --print-certs "$apk" | grep -E "SHA-256" > signing-cert.txt
           cat out/SHA256SUMS.txt signing-cert.txt
+          if ! grep -qi "$EXPECTED_CERT_SHA256" signing-cert.txt; then
+            echo "::error::The APK is not signed with the expected release certificate"
+            exit 1
+          fi
+
+      - name: Upload dry-run artifact
+        if: steps.signing.outputs.enabled == 'true' && env.DRY_RUN == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dry-run-${{ env.TAG }}
+          path: out/
+          retention-days: 3
 
       - name: Attest build provenance
-        if: steps.signing.outputs.enabled == 'true'
+        if: steps.signing.outputs.enabled == 'true' && env.DRY_RUN != 'true'
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: out/*.apk
 
       - name: Release notes from CHANGELOG
-        if: steps.signing.outputs.enabled == 'true'
+        if: steps.signing.outputs.enabled == 'true' && env.DRY_RUN != 'true'
         run: |
           awk -v v="$VERSION" '
             $0 ~ "^## \\[" v "\\]" { found = 1; next }
@@ -124,7 +144,7 @@ jobs:
           } >> notes.md
 
       - name: Publish GitHub release
-        if: steps.signing.outputs.enabled == 'true'
+        if: steps.signing.outputs.enabled == 'true' && env.DRY_RUN != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

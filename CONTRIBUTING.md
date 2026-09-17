@@ -71,4 +71,4 @@ The workflow needs these repository secrets:
 | `RELEASE_KEY_ALIAS` | key alias |
 | `RELEASE_KEY_PASSWORD` | key password |
 
-Without them the workflow skips publishing with a warning. Locally, `scripts/build-release.sh` uses `keystore.properties`, which is ignored by git. The release key must stay the same across versions; otherwise users cannot update.
+Without them the workflow skips publishing with a warning. To test signing without publishing, run the workflow manually (*Actions → Release → Run workflow*) with `dry_run` enabled; the signed APK is attached to the run as an artifact. The workflow refuses to publish an APK whose certificate differs from the fingerprint in the README. Locally, `scripts/build-release.sh` uses `keystore.properties`, which is ignored by git. The release key must stay the same across versions; otherwise users cannot update.
